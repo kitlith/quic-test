@@ -1,0 +1,4 @@
+declare -A COMMITS=(
+    ["msquic"]="bf7f8344caa1e952ae68d1f5362b819729c200ec"
+    ["dotnet"]="e994f00bc6b7d670eda54643132075568c487cf9"
+)

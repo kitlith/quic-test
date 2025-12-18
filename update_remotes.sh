@@ -3,6 +3,8 @@
 # change_id of the merge commit
 MERGE=ooxtuqvy
 
+source workflow/upstream-commits
+
 maybe_create_remote() {
 	local remote_name="$1"
 	local remote_url="$2"
@@ -24,7 +26,7 @@ filter_remote() {
 	echo "-- Fetching upstream $remote_name"
 	jj git fetch --remote "$remote_name" -b "$remote_branch"
 	if [ -z "$UPDATE" ]; then
-		local commit="$(jj log --no-graph -T "trailers.filter(|t| t.key() == \"$trailer_id\").map(|t| t.value())" -r $MERGE)"
+		local commit="${COMMITS[$remote_name]}"
 		echo "-- Pinning $remote_name to current commit ($commit)"
 		jj bookmark create -r "$commit" "tmp-$remote_name"
 	else
@@ -50,19 +52,25 @@ filter_remote msquic main workflow/msquic-filter MsQuic-Commit
 
 
 echo "-- Rebasing onto updated upstreams"
-abandon_parents=$(jj log --no-graph -T 'change_id ++ " | "' -r "$MERGE- ~ workflow::")
-workflow_parent=$(jj log --no-graph -T 'change_id ++ " | "' -r "$MERGE- & workflow::")
-jj rebase -s $MERGE -d "$workflow_parent none()" -d dotnet-subset -d msquic-subset
+abandon_parents="$(jj log --no-graph -T 'change_id ++ " | "' -r "$MERGE- ~ workflow::") none()"
+workflow_parent="$(jj log --no-graph -T 'change_id ++ " | "' -r "$MERGE- & workflow::") none()"
+jj rebase -s $MERGE -d "$workflow_parent" -d dotnet-subset -d msquic-subset
 
-{
-	echo "Merge upstream msquic bindings & dotnet subset"
-	echo
-	echo -n "MsQuic-Commit: "; jj log --no-graph -T 'commit_id ++ "\n"' -r tmp-msquic --no-pager --color=never
-	echo -n "Dotnet-Commit: "; jj log --no-graph -T 'commit_id ++ "\n"' -r tmp-dotnet --no-pager --color=never
-} | jj desc -r $MERGE --stdin
+cat << EOF > workflow/upstream-commits
+declare -A COMMITS=(
+    ["msquic"]="$(jj log --no-graph -T 'commit_id' -r tmp-msquic --no-pager --color=never)"
+    ["dotnet"]="$(jj log --no-graph -T 'commit_id' -r tmp-dotnet --no-pager --color=never)"
+)
+EOF
+
+# if we are using a new set of upstream commits
+if [[ "$(jj log -r 'files(workflow/upstream-commits) & @' --count)" != "0" ]]; then
+    echo "-- Updating workflow branch with new upstream commits"
+    jj squash workflow/upstream-commits -A "$workflow_parent"
+fi
 
 jj bookmark forget tmp-msquic
 jj bookmark forget tmp-dotnet
 
 echo "-- Abandoning old versions of upstreams"
-jj abandon -r "..($abandon_parents none()) ~ ..$MERGE"
+jj abandon -r "..($abandon_parents) ~ ..$MERGE"
