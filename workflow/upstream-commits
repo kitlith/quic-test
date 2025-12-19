@@ -1,4 +1,4 @@
 declare -A COMMITS=(
-    ["msquic"]="bf7f8344caa1e952ae68d1f5362b819729c200ec"
+    ["msquic"]="f2909896f2c8d8f9746eb67ea906fb8e46a729bc"
     ["dotnet"]="e994f00bc6b7d670eda54643132075568c487cf9"
 )

@@ -34,7 +34,7 @@
 
             ::Kernel32/Interop.FormatMessage.cs
             ::SChannel/Interop.SECURITY_STATUS.cs
-            
+
             ::Crypt32/Interop.CertDuplicateCertificateContext.cs
             ::Crypt32/Interop.CertFreeCertificateContext.cs
             ::Crypt32/Interop.CertGetCertificateContextProperty.cs
@@ -51,7 +51,7 @@
         ::Microsoft/Win32/SafeHandles/SafeCertContextHandle.cs
         ::Microsoft/Win32/SafeHandles/SafeCrypt32Handle.cs
         ::Microsoft/Win32/SafeHandles/SafeHandleCache.cs
-        
+
         ::Interop/Linux/Interop.Libraries.cs
 
         ::Interop/FreeBSD/Interop.Libraries.cs
@@ -81,4 +81,5 @@
     ]
 
     src/Polyfill=:/src/libraries/System.Net.Security/src/System/Net/Security::TlsCipherSuite.cs
+    SECURITY.md=::SECURITY.md
 ]
