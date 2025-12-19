@@ -1,5 +1,7 @@
 # Security Policy
 
+Test
+
 ## Supported Versions
 
 The .NET, .NET Core and ASP.NET Core support policy, including supported versions can be found at the [.NET and .NET Core Support Policy Page](https://dotnet.microsoft.com/platform/support/policy/dotnet-core).
@@ -15,4 +17,3 @@ You should receive a response within 24 hours. If for some reason you do not, pl
 Further information can be found in the MSRC [Report an issue and submission guidelines](https://www.microsoft.com/en-us/msrc/faqs-report-an-issue).
 
 Reports via MSRC may qualify for the Microsoft .NET Bug Bounty. Details of the Microsoft .NET Bounty Program including terms and conditions are at [https://aka.ms/corebounty](https://aka.ms/corebounty).
-
